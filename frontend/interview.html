@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Interview Question</h2>
+<p><strong>Current Level:</strong> <span id="difficulty"></span></p>
+
+<div class="question-box">
+    <strong>Question:</strong>
+    <p id="questionText">Loading question...</p>
+</div>
+
+<textarea id="answer" rows="6" placeholder="Write your answer here..."></textarea>
+<br>
+<button type="button" onclick="submitAnswer()">Submit Answer</button>
+
+<p id="feedback" style="margin-top: 10px; font-weight: bold;"></p>
+
+<script>
+let session_id = localStorage.getItem("session_id");
+let current_question_id = null
+async function loadQuestion() {
+    // FIX: Changed URL from /get_question/ to /api/question/ to match your urls.py
+    const response = await fetch(`/api/question/?session_id=${session_id}`);
+    const data = await response.json();
+
+    if (data.question) {
+        document.getElementById("questionText").innerText = data.question;
+        document.getElementById("difficulty").innerText = data.difficulty;
+        document.getElementById("feedback").innerText = ""; // Clear feedback for new question
+    } else if (data.message === "Interview already completed" || data.error) {
+        window.location.href = "/result/";
+    }
+}
+
+async function submitAnswer() {
+
+    const answer = document.getElementById("answer").value;
+    const session_id = localStorage.getItem("session_id");
+    const feedback = document.getElementById("feedback");
+
+    if (!answer.trim()) {
+        alert("Please provide an answer.");
+        return;
+    }
+
+    if (!session_id) {
+        feedback.innerText = "Error: No Session ID found.";
+        return;
+    }
+
+    feedback.innerText = "Evaluating...";
+
+    const formData = new FormData();
+    formData.append('session_id', session_id);
+    formData.append('answer', answer);
+
+    try {
+
+        const response = await fetch('/api/evaluate/', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (data.message === "Interview completed") {
+
+            localStorage.setItem("correct", data.correct)
+            localStorage.setItem("partial", data.partial)
+            localStorage.setItem("incorrect", data.incorrect)
+            localStorage.setItem("accuracy", data.accuracy)
+
+            window.location.href = "/result/";
+            return;
+        }
+
+        if (data.error) {
+            feedback.innerText = "Error: " + data.error;
+            return;
+        }
+
+        feedback.innerText = `Evaluation: ${data.evaluation} | Next Difficulty: ${data.next_difficulty}`;
+
+        document.getElementById("answer").value = "";
+
+        setTimeout(loadQuestion, 2000);
+
+    } catch (error) {
+
+        console.error("Fetch error:", error);
+        feedback.innerText = "Connection error. Please try again.";
+
+    }
+}
+
+window.onload = loadQuestion;
+</script>
+{% endblock %}

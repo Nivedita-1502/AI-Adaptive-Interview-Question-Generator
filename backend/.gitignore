@@ -1,0 +1,16 @@
+# Environment variables
+.env
+
+# Python virtual environments
+venv/
+.venv/
+
+# Trained models
+backend/interview_trained_model/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Database
+db.sqlite3

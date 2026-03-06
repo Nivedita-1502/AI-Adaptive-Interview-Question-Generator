@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Interview Login</h2>
+
+<form method="POST">
+
+{% csrf_token %}
+
+<label>Your Name</label>
+
+<input type="text" name="candidate_name" required>
+
+<button type="submit">
+
+Start Interview
+
+</button>
+
+</form>
+
+{% endblock %}

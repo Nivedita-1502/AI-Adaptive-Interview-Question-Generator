@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Interview Completed</h2>
+
+<div class="result-box">
+
+<p><strong>Total Questions:</strong> <span id="total"></span></p>
+
+<p style="color:green;"><strong>Correct:</strong> <span id="correct"></span></p>
+
+<p style="color:orange;"><strong>Partial:</strong> <span id="partial"></span></p>
+
+<p style="color:red;"><strong>Incorrect:</strong> <span id="incorrect"></span></p>
+
+<h3>Final Score: <span id="score"></span>%</h3>
+
+</div>
+
+<button onclick="restartInterview()">Start New Interview</button>
+
+
+<script>
+
+const totalQuestions = 3
+
+const correct = parseInt(localStorage.getItem("correct")) || 0
+const partial = parseInt(localStorage.getItem("partial")) || 0
+const incorrect = parseInt(localStorage.getItem("incorrect")) || 0
+const accuracy = localStorage.getItem("accuracy") || "0"
+
+document.getElementById("total").innerText = totalQuestions
+document.getElementById("correct").innerText = correct
+document.getElementById("partial").innerText = partial
+document.getElementById("incorrect").innerText = incorrect
+document.getElementById("score").innerText = accuracy
+
+
+function restartInterview(){
+
+    localStorage.clear()
+
+    window.location.href = "/"
+
+}
+
+</script>
+
+{% endblock %}
