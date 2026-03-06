@@ -6,7 +6,7 @@ venv/
 .venv/
 
 # Trained models
-backend/interview_trained_model/
+interview_trained_model/
 
 # Python cache
 __pycache__/
