@@ -1,0 +1,15 @@
+.env
+**/.env
+__pycache__/
+*.py[cod]
+.vscode/
+logs/
+models_storage/
+
+**/node_modules/
+**/.vite/
+
+**/model.safetensors
+**/*_backup/
+**/*_new/
+**/*_trained/
